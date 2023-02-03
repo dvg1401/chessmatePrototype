@@ -1,0 +1,62 @@
+#chessboard-container {
+  display: grid;
+  grid-template-columns: 10% 40% 40% 10%;
+  grid-template-areas:
+    ". chessboard chessboard engineBar"
+    "boardOptions boardOptions boardOptions boardOptions"
+    ;
+}
+
+#chessboard-container>#board {
+  grid-area: chessboard;
+  width: 100%;
+}
+
+#chessboard-container>#engineBar {
+  grid-area: engineBar;
+  width: 50%;
+  padding-left: 1vw;
+}
+
+
+#chessboard-container>#boardOptions
+{
+  grid-area: boardOptions;
+  place-self: center;
+  margin-top: 1vw;
+}
+
+/* only useful with pieces to put in */
+/* #chessboard-container>#clearBoard
+{
+  grid-area: clearBoard;
+  place-self: center;
+} */
+
+#engineBar>div {
+  height: 50%;
+  width: 100%;
+}
+
+#engineBar>.black {
+  background-color: #4A4545;
+}
+
+#engineBar>.white {
+  background-color: #D9D9D9;
+}
+
+#boardOptions> button {
+  background-color: #2E2C4E;
+  border-radius: 25px;
+  border: none;
+  font-family: 'Inika', serif;
+  color: #FFFFFF;
+  font-size: clamp(.25rem,1.5vw,1rem);
+  margin: .75vw;
+  width: 10vw;
+  height: 2vw;
+ 
+}
+
+

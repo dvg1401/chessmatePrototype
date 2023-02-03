@@ -1,0 +1,175 @@
+#stockfish-container {
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: 10%;
+    grid-template-rows: 12% 78%;
+  }
+  
+  #stockfish-container > #current-move {
+    display: flex;
+    background-color: #1B1A2E;
+    border-radius: 30px;
+    width: 100%;
+  }
+
+  #stockfish-container > #stockfish {
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-template-areas:
+    "currentAdvantage currentAdvantage stockfishDetails stockfishDetails"
+    "ruler ruler ruler ruler"
+    "bestMoves bestMoves bestMoves bestMoves"
+    "stockfishControl stockfishControl stockfishControl stockfishControl";
+    row-gap: 0;
+    grid-template-rows: 15% 2.5% 67.5% 15% ;
+    background-color: #1B1A2E;
+    border-radius: 25px;
+    height: 100%;
+    width: 100%;
+  }
+
+  #stockfish > #currentAdvantage
+  {
+    place-self: center;
+    grid-area: currentAdvantage;
+    display: grid;
+    place-content: center;
+    padding: .25vw;
+  }
+
+  #stockfish > #stockfishDetails
+  {
+    place-self: center;
+    grid-area: stockfishDetails;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 50%;
+    align-content: space-around;
+    font-size:  clamp(0.5rem, 1vw, 1rem);
+    text-align: left;
+    padding: .25vw;
+  }
+
+  #stockfish > .RULER
+  {
+    grid-area: ruler;
+  }
+
+  #stockfish > #bestMoves
+  {
+    grid-area: bestMoves;
+    display: grid;
+    grid-template-columns: repeat(4,25%);
+    grid-template-rows: repeat(5,20%);
+    grid-template-areas: 
+    "headline headline headline headline"
+    ". . . .";
+    text-align: left;
+    font-size:  clamp(0.5rem, 1vw, 1rem);
+    padding-left: 1vw;
+
+  }
+
+  #bestMoves>.headline
+  {
+    grid-area: headline;
+  }
+
+  
+  #stockfish > #stockfishControl
+  {
+    grid-area: stockfishControl;
+    display: grid;
+    grid-template-columns: repeat(5,20%);
+    grid-template-rows: 100%;
+    grid-template-areas: ". . . onOffToggle stockfishOptions";
+    align-items: center;
+    justify-items: end;
+    padding-right: .5vw;
+  }
+
+  #stockfishControl > #onOffToggle
+  {
+    grid-area: onOffToggle;
+  }
+
+  #stockfishControl > #stockfishOptions
+  {
+    grid-area: stockfishOptions;
+    place-self: center;
+  }
+
+  #currentAdvantage>h1
+  {
+    font-size: 2.5vw;
+    font-size:  clamp(1rem, 2.5vw, 3rem);
+  }
+
+
+  #whichColorsTurn
+  {
+    background-color: rgb(0, 0, 0);
+    height: 100%;
+    width: 22.5%;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
+  
+  #whichColorsTurn > .CIRCLE {
+    background-color:#59CBE8;
+    height: 2vw;
+    width: 2vw;
+    animation-name: none;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  #current-move > #text-container {
+    width: 77.5%;
+  }
+
+  #text-container > h1 {
+    padding: 0;
+    margin: 0 0 10px 0;
+    font-size: calc(1rem + 1.5vw);
+  }
+
+  #stockfish > #colors-advantage {
+    height: 100px;
+  }
+
+  #colors-advantage > h1 {
+    font-size: calc(1rem + 2vw);
+    padding: 0;
+    margin: 0 0 1vw 0;
+  }
+
+  #stockfish > #stockfish-details {
+    font-size: calc(0.5rem + 0.5vw);
+  }
+
+  #stockfish > hr {
+    transform: rotate(90deg);
+    align-self: flex-start;
+  }
+
+  #horizontal-rule
+  {
+    background-color: #FFFFFF;
+    height: 2.5px;
+  }
+
+  @keyframes grow {
+    from {
+      transform: scale(1);
+      box-shadow: 0px 0px 1px 1px;
+
+    }
+    to {
+      transform: scale(1.25);
+      box-shadow: 0px 0px 2px 2px;
+    }
+  }
+
+  

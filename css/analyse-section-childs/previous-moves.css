@@ -1,0 +1,102 @@
+#previous-moves {
+  background-color: #1B1A2E;
+  border-radius: 25px;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-areas:
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOverview"
+    "moveOsverview"
+    "controlContainer"
+}
+
+/* move overview */
+#previous-moves>#moveOverview
+
+  {
+  grid-area: moveOverview;
+  display: grid;
+  grid-template-columns: 15% 42.5% 42.5%;
+  grid-template-rows: 10%;
+  padding: 1vw;
+  font-size: clamp(.5rem,1.75vw, 2rem);
+  overflow-y: auto;
+  text-align: left;
+}
+
+#moveOverview>.incrementMoveCounter
+{
+  counter-increment: moves;
+}
+
+.incrementMoveCounter::before
+{
+  content: counter(moves);
+  font-family: 'Inika', serif;
+}
+
+
+/* control container */
+#previous-moves>#control-container {
+  grid-area: controlContainer;
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+  grid-template-areas:
+    "- - - -"
+    "rule rule rule rule"
+    ". . . gearWheel ";
+  justify-items: center;
+
+}
+
+#control-container>.RULER {
+  grid-area: rule;
+}
+
+#control-container>#notationOptions {
+  grid-area: gearWheel;
+}
+
+
+#control-container>.select-move {
+  background-color: #2E2C4E;
+  border-radius: 25px;
+  border: none;
+  height: clamp(10px, 1.75vw, 30px);
+  width: clamp(20px, 3.5vw, 60px);
+  margin: 0.5vw;
+}
+
+#control-container>.select-move:hover
+{
+  border: 2px solid #d9d9d9;
+}
+
+#control-container>.select-move>img {
+  height: clamp(5.66px, calc(1vw * 1.13), 17px);
+  width: clamp(5px, 1vw, 15px);
+}
+
+
+/*stroke for very last and first move */
+#control-container>button>.stroke {
+  background-color: #FFFFFF;
+  height: 80%;
+  width: 2px;
+}
+
+/** Notation Options */
+
+#notationOptions>.CIRCLE {
+  background-color: #1B1A2E;
+  height: 15px;
+  width: 15px;
+}
