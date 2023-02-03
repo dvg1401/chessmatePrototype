@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inika&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+    integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">
+  <!--- Header Navigation -->
+  <header>
+    <div id="logo">
+      <img src="img/logo_small.png" alt="">
+    </div>
+    <div id="nav">
+      <span>Mein Kurs</span>
+      <span>Mein Konto</span>
+    </div>
+  </header>
+</head>
+
+<body id="body">
+  <section id="analyse-section" class="WIDTH-100">
+    <h1>ANALYSE</h1>
+    <!-- contains all analyzing interfaces including chessboard itself-->
+    <div id="analyse-container">
+      <!-- lists  all previous moves including the current move -->
+      <div id="previous-moves">
+        <!-- move overview -->
+        <div id="moveOverview">
+        </div>
+        <!-- control-container -->
+        <div id="control-container">
+          <!-- switch to defined move -->
+          <button class="select-move CENTER-CHILDS" id="moveVeryFirst">
+            <div class="stroke"></div>
+            <img src="vektor_img/arrow_left.png" alt="arrow-left">
+            <img src="vektor_img/arrow_left.png" alt="arrow-left">
+          </button>
+          <button class="select-move CENTER-CHILDS" id="moveBefore">
+            <img src="vektor_img/arrow_left.png" alt="arrow-left">
+          </button>
+          <button class="select-move CENTER-CHILDS" id="moveNext">
+            <img src="vektor_img/arrow_right.png" alt="arrow-right">
+          </button>
+          <button class="select-move CENTER-CHILDS" id="moveVeryLast">
+            <img src="vektor_img/arrow_right.png" alt="arrow-right">
+            <img src="vektor_img/arrow_right.png" alt="arrow-right">
+            <div class="stroke"></div>
+          </button>
+          <!-- notationOptions -->
+          <div class="RULER WIDTH-100"></div>
+          <button id="notationOptions" class="CENTER-CHILDS GEAR-WHEEL">
+            <div class="GEAR-CIRCLE"></div>
+          </button>
+        </div>
+
+      </div>
+      <!-- chessboard-container -->
+      <div id="chessboard-container">
+        <div id="board"></div>
+        <!-- shows current advantage-->
+        <div id="engineBar">
+          <div class="black"></div>
+          <div class="white"></div>
+        </div>
+        <!-- shows current advantage-->
+        <div id="boardOptions">
+        <button id="startPosition">Start</button>
+        <button id="flipOrientation">Orientierung</button>
+        <!-- <button id="clearBoard" class="chessboard-options">Leeres Brett</button> -->
+        </div>
+        
+      </div>
+
+      <!-- stockfish-container -->
+      <div id="stockfish-container">
+        <div id="current-move">
+          <div id="whichColorsTurn" class="CENTER-CHILDS">
+            <div id="colorToMove" class="CIRCLE"></div>
+          </div>
+          <div id="text-container" class="CENTER-CHILDS">
+            <h1 id="playedMove"></h1>
+          </div>
+        </div>
+        <div id="stockfish">
+          <div id="currentAdvantage" class="WIDTH-100 HEIGHT-100">
+            <h1>+ 0.4</h1>
+          </div>
+          <div id="stockfishDetails" class="WIDTH-100 HEIGHT-100">
+            <p id="stockfishVersion" class="WIDTH-100">Stockfish 15</p>
+            <p id="stockfishDepth" class="WIDTH-100">Depth 25/25</p>
+          </div>
+          <div class="RULER WIDTH-100"></div>
+          <div id="bestMoves" class="HEIGHT-100">
+            <p class="headline">Best Moves</p>
+            <div>1. e4 c5</div>
+            <div>2. Sf3 d6</div>
+            <div>3. d4 cxd5 </div>
+            <div>4. sxd5</div>
+            <div>4. sxd5</div>
+          </div>
+          <div id="stockfishControl">
+            <label id="onOffToggle" class="switch">
+              <input type="checkbox">
+              <span class="slider round"></span>
+            </label>
+            <button id="stockfishOptions" class="GEAR-WHEEL CENTER-CHILDS">
+              <div class="GEAR-CIRCLE"></div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <!-- end of stockfish-container -->
+    </div>
+
+    <!---- overlay for stockfish settings and import-export---->
+    <div id="overlaySettingsContainer" class="overlay-container CENTER-CHILDS REMOVE">
+      <div id="importExportGame" class="REMOVE">
+        <h1>FEN-Import</h1>
+        <input id="fenInput" type="text" class="WIDTH-100">
+        <button class="fenbtns" type="submit" id="importBTN">IMPORT</button>
+        <h1>FEN-Export</h1>
+        <input type="text" class="WIDTH-100">
+        <hr>
+        <div class="FLEX">
+          <p class="WIDTH-50">Exportieren als:</p>
+          <div id="exportGame" class="WIDTH-50">
+            <label>PGN</label><input type="checkbox" name="" id="">
+            <label>FEN</label><input type="checkbox" name="" id="">
+          </div>
+        </div>
+        <button class="fenbtns" type="submit" id="exportBTN">EXPORT</button>
+      </div>
+      <div id="stockfishSettings" class="REMOVE">
+        <!--- engine depth settings -->
+        <h1>Depth:</h1>
+        <input id="depthRangeSlider" min="1" max="32" class="range-background WIDTH-100" type="range" value="15"
+          oninput="depthValue.innerHTML = this.value">
+        <span id="depthValue"></span>
+        <span id="depthMaxDisplay"></span>
+        <!--- memory workload settings -->
+        <h1>Memory:</h1>
+        <input id="memoryRangeSlider" min="16" max="1000" class="range-background WIDTH-100" type="range" value="16"
+          oninput="memoryValue.innerHTML = this.value">
+        <span id="memoryValue"></span>
+        <span id="memoryMaxDisplay"></span>
+        <!-- cpu kernels involved settings-->
+        <h1>CPU:</h1>
+        <input id="cpuRangeSlider" min="1" max="8" class="range-background WIDTH-100" type="range" value="2"
+          oninput="cpuValue.innerHTML = this.value">
+        <span id="cpuValue"></span>
+        <span id="cpuMaxDisplay"></span>
+      </div>
+      <button id="overlayButton" class="close-button">
+        <span>x</span>
+      </button>
+    </div>
+  </section>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+    integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.2/chess.min.js"></script>
+  <!-- intialize and customize chessboard.js -->
+  <!-- <script src="scripts/chessboard.js"></script> -->
+  <!--initialize analyse option overlay-->
+  <script src="scripts/analyse_overlay.js"></script>
+  <script src="scripts/chessgame.js"></script>
+</body>
+
+</html>
