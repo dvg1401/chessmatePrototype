@@ -4,6 +4,7 @@
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta charset="utf-8">
   <link href="https://fonts.googleapis.com/css2?family=Inika&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
@@ -67,7 +68,7 @@
         </div>
         <!-- shows current advantage-->
         <div id="boardOptions">
-        <button id="startPosition">Start</button>
+        <button id="startPosition">Zurücksetzen</button>
         <button id="flipOrientation">Orientierung</button>
         <!-- <button id="clearBoard" class="chessboard-options">Leeres Brett</button> -->
         </div>
@@ -86,24 +87,18 @@
         </div>
         <div id="stockfish">
           <div id="currentAdvantage" class="WIDTH-100 HEIGHT-100">
-            <h1>+ 0.4</h1>
           </div>
           <div id="stockfishDetails" class="WIDTH-100 HEIGHT-100">
-            <p id="stockfishVersion" class="WIDTH-100">Stockfish 15</p>
-            <p id="stockfishDepth" class="WIDTH-100">Depth 25/25</p>
+            <p id="stockfishVersion" class="WIDTH-100">Stockfish 11</p>
+            <p id="stockfishDepth" class="WIDTH-100"></p>
           </div>
           <div class="RULER WIDTH-100"></div>
           <div id="bestMoves" class="HEIGHT-100">
             <p class="headline">Best Moves</p>
-            <div>1. e4 c5</div>
-            <div>2. Sf3 d6</div>
-            <div>3. d4 cxd5 </div>
-            <div>4. sxd5</div>
-            <div>4. sxd5</div>
           </div>
           <div id="stockfishControl">
             <label id="onOffToggle" class="switch">
-              <input type="checkbox">
+              <input id="engineToggle" type="checkbox">
               <span class="slider round"></span>
             </label>
             <button id="stockfishOptions" class="GEAR-WHEEL CENTER-CHILDS">
@@ -123,7 +118,7 @@
         <input id="fenInput" type="text" class="WIDTH-100">
         <button class="fenbtns" type="submit" id="importBTN">IMPORT</button>
         <h1>FEN-Export</h1>
-        <input type="text" class="WIDTH-100">
+        <input id="fenOutput" class="WIDTH-100">
         <hr>
         <div class="FLEX">
           <p class="WIDTH-50">Exportieren als:</p>
@@ -168,7 +163,9 @@
   <!-- <script src="scripts/chessboard.js"></script> -->
   <!--initialize analyse option overlay-->
   <script src="scripts/analyse_overlay.js"></script>
+  <script src="stockfish.js-Stockfish11/src/stockfish.js"></script>
   <script src="scripts/chessgame.js"></script>
+  <script src="scripts/useStockfish.js"></script>
 </body>
 
 </html>

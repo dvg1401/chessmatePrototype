@@ -14,6 +14,8 @@
   /* chessboard-container */ 
   @import url("css/analyse-section-childs/chessboard-container.css");
 
+  /* chessboard custom styles */
+  @import url("css/analyse-section-childs/chessboard.css");
   /* stockfish-container */
   @import url("css/analyse-section-childs/stockfish-container.css");
 
@@ -348,13 +350,4 @@ input:checked + .slider:before {
   color: #1B1A2E;
 }
 
-
 /*-------------------------------------*/
-
-
-/* chess.js & chessboard.js-------------------------------------*/
-.kingInCheck {
-  border: 3px solid #EB1D14 !important;
-  border-radius: 50% !important;
-  filter: blur(4px) !important;
-}
