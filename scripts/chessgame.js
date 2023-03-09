@@ -1,9 +1,20 @@
-let board = null
+let board
 let game = new Chess()
+let stockfish
+let currentPosition
 
+// engine off/on
+let engineOn = false
 // field color for black and white
 const FIELD_COLOR_WHITE = "#59CBE8"
 const FIELD_COLOR_BLACK = "#000000"
+const WHITE = "#FFFFFF"
+
+// function onClickField () {
+// $(".board-b72b1").on("click", function(e)
+// {
+//     console.log(e.which)
+// })
 
 function onDragStart(source, piece, position, orientation) {
     // do not pick up pieces if the game is over
@@ -25,6 +36,21 @@ function onDrop(source, target) {
     })
     // illegal move
     if (move === null) return 'snapback'
+ 
+    // get saved position of last element inside moveoverview
+    let lastPosition = $(moveOverview).children().last().attr("data-fen")
+
+    // if last position is defined
+    if (!lastPosition) 
+    {
+        'no snapback'
+    }
+    else if (currentPosition !== lastPosition)
+    {
+        console.log('NOT EQUAL')
+        return 'snapback'
+    }
+
     updateStatus()
 }
 
@@ -44,8 +70,8 @@ function updateStatus() {
     }
 
     // change color of current move graphic
-    $(whichColorsTurn).css("background-color", (moveColor == 'White') ? FIELD_COLOR_BLACK : FIELD_COLOR_WHITE)
-    $(colorToMove).css("background-color", (moveColor == 'White') ? FIELD_COLOR_WHITE : FIELD_COLOR_BLACK)
+    $(whichColorsTurn).css("background-color", (moveColor == 'White') ? FIELD_COLOR_BLACK : WHITE)
+    $(colorToMove).css("background-color", (moveColor == 'White') ? WHITE : FIELD_COLOR_BLACK)
 
     // checkmate?
     if (game.in_checkmate()) {
@@ -63,15 +89,12 @@ function updateStatus() {
 
         // check?
         if (game.in_check()) {
-            console.log('King: ',$("[data-piece=bK]"))
             let kingInCheck = (moveColor === 'White') ? $('[data-piece="wK"]')[0] : $('[data-piece="bK"]')[0]
-            $(kingInCheck).addClass("kingInCheck")
+            $(kingInCheck).addClass("kingInCheck::after")
         }
     }
 
-    //   $status.html(status)
-    $currentPosition  = game.fen()
-    //   $pgn.html(game.pgn())
+    currentPosition = game.fen()
 
     // insert move into the moveoverview
     let listMoves = game.history();
@@ -79,41 +102,41 @@ function updateStatus() {
     let div = document.createElement("div")
     let divCounter = document.createElement("div")
 
+    // save current position in dataattribute
+    $(div).attr("data-fen", currentPosition)
     // insert move into div
     $(div).text(lastMove);
 
     if (lastMove != null) {
-        if(listMoves.length % 2 === 0)
-        {
+        // display played move
+        let text
+        // if move is black, add counter
+        if (moveColor === 'Black') {
             $(moveOverview).append(divCounter);
             $(moveOverview).append(div);
             divCounter.innerHTML = "."
             $(divCounter).addClass("incrementMoveCounter");
-        }
-        else {
-            $(moveOverview).append(div);
-        }
-        // increase rows auf grid container
-        cutInHalf = Math.ceil(listMoves.length / 2);
-        // prevent rows become null
-        let increaseRows = (cutInHalf != 0) ? cutInHalf : 1;
-        $(moveOverview).css("grid-template-rows",`repeat(${increaseRows},10%)`)
-
-        // display played move
-        let text
-        if (moveColor === 'Black')
-        {
             $(playedMove).addClass('incrementMoveCounter')
             text = ".  " + lastMove
-        } 
-        else
-        {
+        }
+        // if move is white, remove counter
+        else {
             $(playedMove).removeClass('incrementMoveCounter')
+            $(moveOverview).append(div);
             text = "..." + lastMove;
         }
-       
+
+        // insert current move
         $(playedMove).html(text)
+
+        //moveOverview auto-scroll
+        $(moveOverview).scrollTop($(moveOverview).height())
+
+
     }
+    
+    // update Stockfish if engine is on
+    engineOn ? updateStockfish() : null
 }
 
 let config = {
@@ -123,7 +146,7 @@ let config = {
     onDragStart: onDragStart,
     onDrop: onDrop,
     onSnapEnd: onSnapEnd,
-    // onChange: onChange,
+    onChange: onChange,
     pieceTheme: 'pieces/{piece}.svg',
     sparePieces: false,
     position: 'start',
@@ -135,44 +158,45 @@ board = Chessboard('board', config)
 $(window).on("resize", board.resize);
 
 //removing border of the Board
-const BOARD_STYLES = document.querySelector('.board-b72b1');
-BOARD_STYLES.style.border = "1px solid #11111F";
+$('.board-b72b1').addClass("noBorder")
 
-//customize notation and check if notation is set in CONFIG
-if (config.showNotation)
-    customizeNotation();
 
-//change colors of board
-changeBoardTheme();
-
-// change bar height to board height
-fitBarToBoard();
+// customize board
+onChange()
 
 //customize again, if window resized
 window.addEventListener("resize", function () {
-    // change board theme again
-    changeBoardTheme();
-    // fit bar to board again
-    fitBarToBoard();
-    // customize notation
+    onChange()
+});
+
+function onChange() {
+    //change colors of board
+    changeBoardTheme()
+    // change bar height to board height
+    fitBarToBoard()
+    //customize notation and check if notation is set in CONFIG
     if (config.showNotation)
         customizeNotation();
-});
+}
 
 function changeBoardTheme() {
     // selecting all fields of the board
-    let allFields = document.querySelectorAll('.square-55d63');
-    allFields.forEach(field => {
-        // remove Border
-        field.style.border = "none !important";
+    let allFields = $('.square-55d63');
+    // foreach loop on allFields and log class name of element
+    $.each(allFields, function (i, field) {
+        let selector = $(field)
+        let identifier = selector.attr("class");
+        // change field colors of black and white
+        identifier.includes("white") ? selector.addClass("whiteField") : selector.addClass("blackField")
 
-        // separate black and white fields
-        let identfier = field.attributes[0].nodeValue;
-        if (identfier.includes("white"))
-            field.style.backgroundColor = FIELD_COLOR_WHITE;
-        else
-            field.style.backgroundColor = FIELD_COLOR_BLACK;
+        // round corners of the board
+        identifier.includes("a8") ? selector.addClass("a8") : null
+        identifier.includes("a1") ? selector.addClass("a1") : null
+        identifier.includes("h8") ? selector.addClass("h8") : null
+        identifier.includes("h1") ? selector.addClass("h1") : null
     });
+
+
 }
 
 // set height of engine bar to height of chessboard
@@ -184,55 +208,249 @@ function fitBarToBoard() {
 // set font-family, font-size, color and font-weight of notation
 function customizeNotation() {
     $(".notation-322f9").each(function () {
-        this.style.fontFamily = "Inika, serif";
-        this.style.fontSize = "clamp(0.25rem,1.25vw,1rem)";
-        this.style.fontWeight = "bold";
-        this.style.color = "#D9D9D9";
+        $(this).addClass("customNotation")
     })
 }
 
-
-$(startPosition).on("click", board.start);
-$(startPosition).on("click", function()
-{
-    game.reset();
+$(startPosition).on("click", function () {
+    // reset board
+    board.start()
+    //reset game
+    game.reset()
+    // reset move overview
     $(moveOverview).empty()
-    updateStatus()
+    // reset move counter
     $(playedMove).removeClass("incrementMoveCounter").empty()
+    // stop animation
+    $(colorToMove).css("animation-name", "none")
+    updateStatus()
 });
 
-$(flipOrientation).on("click", board.flip)
-$(flipOrientation).on("click", function()
-{
-    // change board theme again
-    changeBoardTheme();
-    // fit bar to board again
-    fitBarToBoard();
-    // customize notation
-    if (config.showNotation)
-        customizeNotation();
+$(document).on('keydown', function (e) {
+    // if user presses F
+    if (e.which == 70) {
+        //change board orientation
+        board.flip()
+        // customize board again
+        onChange()
+    }
 })
 
-// $(moveBefore).on("click", function()
-// {
+$(flipOrientation).on("click", function () {
+    //change board orientation
+    board.flip()
+    // customize board again
+    onChange()
 
-//     game.undo();
-// })
+})
 
-$(importBTN).on("click", function()
-{
-    let fen = fenInput.value
-    board.position(fen)
+// move to start position
+$(moveVeryFirst).on("click", function () {
+    // set board to start position
+    board.start()
+    // reset game
     game.reset()
-    game.load(fen)
-    $(moveOverview).empty()
-    importExportGame.classList.add('REMOVE')
-    overlaySettingsContainer.classList.add('REMOVE')
+    // update status
+    updateStatus()
 })
+
+
+// move to previous position
+$(moveBefore).on("click", function () {
+    // find element with data-fen attribute that matches the current position
+    let currentFen = $(`[data-fen="${currentPosition}"]`)
+    // get previous element
+    let previousElement = $(currentFen).prev()
+    // check if previous element has data-fen attribute
+    if (!$(previousElement).attr('data-fen')) {
+        // get previous element of previous element
+        previousElement = $(previousElement).prev()
+        // check if previous element of previous element has data-fen attribute
+        if (!$(previousElement).attr('data-fen')) {
+            // set board to start position
+            board.start()
+            // reset game
+            game.reset()
+            // update status
+            updateStatus()
+            return
+        }
+    }
+
+    let previousPos = $(previousElement).attr('data-fen')
+    // board loads fen
+    board.position(previousPos)
+    // game loads fen
+    game.load(previousPos)
+    // update status
+    updateStatus()
+
+})
+
+// move to next position
+$(moveNext).on("click", function () {
+    // find element with data-fen attribute that matches the current position
+    let currentFen = $(`[data-fen="${currentPosition}"]`)
+    let nextElement, nextPosition
+
+    if (currentFen.length ===  1) {
+        // get next element
+        nextElement = $(currentFen).next()
+
+        // check if next element is defined
+        if ($(nextElement).length === 0) {
+            return
+        }
+        else if (!$(nextElement).attr('data-fen')) {
+            // get next element of next element
+            nextElement = $(nextElement).next()
+        }
+        nextPosition = $(nextElement).attr('data-fen')
+    }
+    else 
+    {
+        // get second child, because first child is always the move number
+        let secChild = $(moveOverview).children()[1]
+        nextPosition = $(secChild).attr('data-fen')
+
+    }
+    // board loads fen
+    board.position(nextPosition)
+    // game loads fen
+    game.load(nextPosition)
+    // update status
+    updateStatus()
+})
+
+//move to last position
+$(moveVeryLast).on("click", function () {
+    // get last position of move overview
+    let lastPosition = $(moveOverview).children().last().attr('data-fen')
+    // if last position is defined
+    if (lastPosition) {
+        // board loads fen
+        board.position(lastPosition)
+        // game loads fen
+        game.load(lastPosition)
+        // update status
+        updateStatus()
+    }
+    // there is no last position
+    else {
+        return
+    }
+})
+
+// import fen
+$(importBTN).on("click", function () {
+    let fen = fenInput.value
+    if (game.validate_fen(fen).valid) {
+        // remove overlay
+        $(importExportGame).addClass('REMOVE')
+        $(overlaySettingsContainer).addClass('REMOVE')
+        // load fen into board
+        board.position(fen)
+        // load fen into game
+        game.load(fen)
+        // update status
+        updateStatus()
+        // reset move overview
+        $(moveOverview).empty()
+    }
+    else {
+        alert("Invalid FEN")
+        return
+    }
+    return true
+})
+
+// export fen
+$(exportBTN).on("click", function () {
+    // get fen from board
+    let fen = currentPosition
+    // set fen in input
+    fenOutput.value = fen
+})
+
+
+// Turn on/off Engine
+$(engineToggle).on("change", function () {
+    // if input is checked turn on engine
+    $(engineToggle).prop('checked') == true ? initalizeStockfish() : shutDownStockfish()
+
+})
+
+// Turn on engine
+function initalizeStockfish() {
+    // initialize stockfish via web worker
+    stockfish = new Worker("stockfish.js-Stockfish11/src/stockfish.js")
+    // set engineOn to true
+    engineOn = true
+    // update engine
+    updateStockfish()
+}
+
+// Update engine input
+function updateStockfish() {
+
+    // empty best moves and evaluation
+    $(bestMoves).empty()
+    $(currentAdvantage).empty()
+
+    // send position to engine
+    stockfish.postMessage("position fen " + currentPosition)
+    stockfish.postMessage("setoption name MultiPV value 5")
+    // determine depth setting
+    let depth = $(depthRangeSlider).val()
+    // set depth calculation
+    stockfish.postMessage("go depth " + depth);
+    // display current depth setting
+    $(stockfishDepth).text("Tiefe " + depth)
+    // get evaluation of current position
+    stockfish.postMessage("eval");
+
+    // filter output
+    stockfish.onmessage = function(event) {
+        //NOTE: Web Workers wrap the response in an object.
+
+        // insert evaluation into dom
+         if(event.data.startsWith("Total evaluation")) {
+            let output = event.data.split(" ")
+            let evaluation = "+ " + output[2]
+            let div = $("<h1></h1>").text(evaluation)
+            $(currentAdvantage).append(div)
+        }
+        // insert bestmove into dom
+         if (event.data.startsWith("bestmove")) {
+            let output = event.data.split(" ")
+            let bestMove = output[1]
+            let div = $("<div></div>").text("1. " + bestMove)
+            $(bestMoves).append(div)
+        }
+        console.log(event.data)
+    }
+    
+}
+
+// Turn off engine
+function shutDownStockfish () {
+
+    // shut down stockfish
+    if (stockfish !== undefined) 
+    {
+        stockfish.postMessage("stop")
+        stockfish.postMessage("quit")
+        // terminate the worker
+        stockfish.terminate()
+        // set Engineon to false
+        engineOn = false
+        // empty output display
+        $(bestMoves).empty()
+        $(currentAdvantage).empty()
+    }
+}
+
+
 
 
 updateStatus()
-
-// function onChange() use for style methods
-// {
-// }
