@@ -116,7 +116,6 @@
   }
   
   #whichColorsTurn > .CIRCLE {
-    background-color:#59CBE8;
     height: 2vw;
     width: 2vw;
     animation-name: none;

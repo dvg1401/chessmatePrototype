@@ -1,0 +1,41 @@
+.a1{
+    border-bottom-left-radius: 25%;
+}
+
+.a8{
+    border-top-left-radius: 25%;
+}
+
+.h8{
+    border-top-right-radius: 25%;
+}
+
+.h1{
+    border-bottom-right-radius: 25%;
+}
+
+.whiteField{
+    background-color: #59CBE8 !important;
+}
+
+.blackField{
+    background-color: #000 !important;
+}
+
+.noBorder{
+    border: none !important;
+}
+
+.customNotation
+{
+    font-family : "Inika, serif" !important;
+    font-size : clamp(0.25rem,1.25vw,1rem)!important;
+    font-weight : bold!important;
+    color : #D9D9D9!important;
+}
+
+.kingInCheck{
+    border: 3px solid #EB1D14 !important;
+    border-radius: 50% !important;
+    filter: blur(4px) !important;
+  }
